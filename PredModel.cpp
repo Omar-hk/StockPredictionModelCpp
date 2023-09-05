@@ -29,7 +29,7 @@ double predictStockPrice(double x, double slope, double intercept) {
 }
 
 int main() {
-    ifstream file("houses.csv");
+    ifstream file("Data/houses.csv");
     vector<vector<double>> data;
     string line;
     while (getline(file, line))
