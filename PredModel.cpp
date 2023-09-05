@@ -2,7 +2,6 @@
 
 using namespace std;
 
-// Function to calculate the mean of a vector
 double calculateMean(vector<double>& data) {
     double sum = 0.0;
     for (double value : data) {
@@ -11,7 +10,6 @@ double calculateMean(vector<double>& data) {
     return sum / data.size();
 }
 
-// Function to calculate the slope (beta1) of the linear regression line
 double calculateSlope(vector<double>& x, vector<double>& y, double xMean, double yMean) {
     double numerator = 0.0;
     double denominator = 0.0;
@@ -22,34 +20,59 @@ double calculateSlope(vector<double>& x, vector<double>& y, double xMean, double
     return numerator / denominator;
 }
 
-// Function to calculate the intercept (beta0) of the linear regression line
 double calculateIntercept(double xMean, double yMean, double slope) {
     return yMean - (slope * xMean);
 }
 
-// Function to predict the stock price using the linear regression model
 double predictStockPrice(double x, double slope, double intercept) {
     return (slope * x) + intercept;
 }
 
 int main() {
-    // Sample data
-    vector<double> x = {1, 2, 3, 4, 5};
-    vector<double> y = {10, 20, 30, 40, 50};
+    ifstream file("houses.csv");
+    vector<vector<double>> data;
+    string line;
+    while (getline(file, line))
+    {
+        vector<double> row;
+        double value;
+        char comma;
+        istringstream ss(line);
+        while (ss >> value)
+        {
+            row.push_back(value);
+            if (ss >> comma)
+            {
+                continue;
+            }
+            else
+            {
+                break;
+            }
+        }
+        data.push_back(row);
+    }
+    
+    vector<double> x;
+    vector<double> y;
+    
+    for (int i = 0; i < data.size(); i++)
+    {
+        x.push_back(data[i][0]);
+        y.push_back(data[i][1]);
+     }
+     
+     double xMean = calculateMean(x);
+     double yMean = calculateMean(y);
+     double slope = calculateSlope(x, y, xMean, yMean);
+     double intercept = calculateIntercept(xMean, yMean, slope);
+     
+     double xValue; 
+     cin >> xValue;
+     
+     double predictedPrice = predictStockPrice(xValue, slope, intercept);
+     
+     cout << "Predicted price for " << xValue << " is: " << predictedPrice << endl;
 
-    // Calculate the mean of x and y
-    double xMean = calculateMean(x);
-    double yMean = calculateMean(y);
-
-    // Calculate the slope and intercept of the linear regression line
-    double slope = calculateSlope(x, y, xMean, yMean);
-    double intercept = calculateIntercept(xMean, yMean, slope);
-
-    // Predict the stock price for a given value of x
-    double xValue; cin >> xValue;
-    double predictedPrice = predictStockPrice(xValue, slope, intercept);
-
-    cout << "Predicted stock price for x = " << xValue << ": " << predictedPrice << endl;
-
-    return 0;
+return 0;
 }
